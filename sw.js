@@ -3,7 +3,7 @@
  * Provides offline caching, lightning-fast app shell loading, and asset caching.
  */
 
-const CACHE_NAME = 'misra-coffee-v2.1';
+const CACHE_NAME = 'misra-coffee-v3.0';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -14,8 +14,12 @@ const STATIC_ASSETS = [
   '/style.css',
   '/qr-platform.css',
   '/script.js',
+  '/web-app.js',
   '/menu-app.js',
   '/manifest.json',
+  '/images/app-icon-192.png',
+  '/images/app-icon-512.png',
+  '/images/apple-touch-icon.png',
   '/images/app-icon.svg',
   '/images/somali-coffee.jpg',
   '/images/breakfast.jpg',

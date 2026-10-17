@@ -1,8 +1,10 @@
 {
-  "name": "MISRA COFFEE — Web Application",
+  "id": "/",
+  "name": "MISRA COFFEE",
   "short_name": "MISRA COFFEE",
-  "description": "Web Application heer sare ah oo casri ah oo loogu talagalay dalabka menu-ga, adeegga miisaska, iyo maamulka MISRA COFFEE.",
+  "description": "MISRA COFFEE Restaurant & Digital Menu Web Application",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#150B08",
@@ -12,18 +14,25 @@
       "src": "/images/app-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/images/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/images/app-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "/images/app-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "/images/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
@@ -32,14 +41,14 @@
       "short_name": "Menu",
       "description": "Furo menu-ga cuntada iyo cabitaanka",
       "url": "/menu",
-      "icons": [{ "src": "/images/app-icon.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "/images/app-icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Admin Login",
       "short_name": "Admin",
       "description": "Qaybta gelitaanka maamulka gaarka ah",
       "url": "/admin/login",
-      "icons": [{ "src": "/images/app-icon.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "/images/app-icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
