@@ -1,0 +1,16 @@
+{
+  "name": "misra-coffee",
+  "version": "1.0.0",
+  "description": "MISRA COFFEE Restaurant & Digital Menu Web Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "keywords": ["coffee", "restaurant", "somali", "pwa", "menu"],
+  "author": "MISRA COFFEE",
+  "license": "ISC"
+}

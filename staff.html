@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>MISRA COFFEE — Dashboard-ka Shaqaalaha (Staff)</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/qr-platform.css">
+</head>
+<body class="staff-page">
+
+  <!-- Staff PIN Login Screen -->
+  <div id="staff-auth-modal" class="auth-overlay">
+    <div class="auth-card">
+      <div class="auth-icon">🔒</div>
+      <h2>Gelitaanka Shaqaalaha</h2>
+      <p>Fadlan geli PIN-ka shaqaalaha si aad u furto dashboard-ka.</p>
+      
+      <form id="staff-pin-form" onsubmit="handleStaffLogin(event)">
+        <div class="pin-input-wrap">
+          <input 
+            type="password" 
+            id="staff-pin-input" 
+            maxlength="6" 
+            placeholder="••••" 
+            autocomplete="off" 
+            inputmode="numeric" 
+            required 
+            autofocus
+          >
+        </div>
+        <p class="pin-hint">💡 Talo: PIN-ka caadiga ah ee shaqaaluhu waa <strong>1234</strong>.</p>
+        <button type="submit" class="btn btn-primary btn-block" id="btn-login-submit">Gal Dashboard-ka</button>
+      </form>
+      <div id="auth-error-msg" class="auth-error" style="display:none;"></div>
+      <div style="margin-top:16px;text-align:center">
+        <a href="/" style="font-size:13px;color:var(--gold)">← Ku noqo Bogga Hore ee Macaamiisha</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Staff Dashboard Layout -->
+  <div id="staff-app-container" style="display:none;">
+    <!-- Top Bar -->
+    <header class="staff-header">
+      <div class="staff-header-inner container">
+        <div class="staff-brand">
+          <span class="staff-badge">STAFF KDS</span>
+          <h1>MISRA COFFEE — Dashboard-ka Shaqaalaha</h1>
+        </div>
+
+        <div class="staff-meta">
+          <div class="live-status-pill">
+            <span class="live-indicator-dot"></span>
+            <span>Toos u Shaqeynaya (Live)</span>
+          </div>
+          <button class="btn btn-sm btn-secondary" onclick="logoutStaff()">Ka Bax (Logout)</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Bar -->
+    <section class="staff-stats-bar">
+      <div class="container stats-grid">
+        <div class="stat-card stat-new">
+          <span class="stat-num" id="stat-count-new">0</span>
+          <span class="stat-label">Codsiyo Cusub (New)</span>
+        </div>
+        <div class="stat-card stat-ack">
+          <span class="stat-num" id="stat-count-ack">0</span>
+          <span class="stat-label">Gacanta Lagu Hayo (In Progress)</span>
+        </div>
+        <div class="stat-card stat-done">
+          <span class="stat-num" id="stat-count-done">0</span>
+          <span class="stat-label">Waa La Dhameeyey (Completed)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter Tabs & Audio Controls -->
+    <div class="container staff-controls-row">
+      <div class="staff-filter-tabs">
+        <button class="staff-tab active" onclick="setStaffFilter('all')">Dhammaan</button>
+        <button class="staff-tab" onclick="setStaffFilter('new')">Cusub Kaliya (<span id="tab-new-badge">0</span>)</button>
+        <button class="staff-tab" onclick="setStaffFilter('acknowledged')">Gacanta Lagu Hayo</button>
+        <button class="staff-tab" onclick="setStaffFilter('completed')">Taariikhda</button>
+      </div>
+
+      <div class="audio-toggle">
+        <label>
+          <input type="checkbox" id="sound-checkbox" checked>
+          <span>Codka Dhawaaqa (Sound Chime) 🔔</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Live Requests Grid -->
+    <main class="container staff-main-content">
+      <div class="requests-grid" id="requests-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </main>
+  </div>
+
+  <script src="/staff-app.js"></script>
+</body>
+</html>

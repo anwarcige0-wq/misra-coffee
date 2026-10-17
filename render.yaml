@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: misra-coffee
+    env: node
+    plan: free
+    region: frankfurt
+    buildCommand: "echo 'No build step required'"
+    startCommand: "node server.js"
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0

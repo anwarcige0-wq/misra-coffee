@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>MISRA COFFEE — Dashboard-ka Maamulka Gaarka ah</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/qr-platform.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2B1B16">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" type="image/svg+xml" href="/images/app-icon.svg">
+</head>
+<body class="admin-page">
+
+  <!-- Top Admin Bar -->
+  <header class="admin-header">
+    <div class="admin-header-inner container">
+      <div class="admin-brand">
+        <div class="logo">
+          <svg class="logo-icon" width="36" height="36" viewBox="0 0 40 40" fill="none" stroke="#C9A15D" stroke-width="1.8">
+            <circle cx="20" cy="20" r="18"/>
+            <path d="M11 18h14v5a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6z"/>
+            <path d="M25 20h2.5a2.5 2.5 0 0 1 0 5H25"/>
+            <path d="M15 10c-1.5 2 1.5 3 0 5"/>
+            <path d="M20 10c-1.5 2 1.5 3 0 5"/>
+          </svg>
+        </div>
+        <div>
+          <span class="admin-badge">PRIVATE ADMIN</span>
+          <h1 id="admin-header-title" style="font-size:22px;margin:2px 0 0 0;color:#FAF6F0">MISRA COFFEE — Maamulka Gaarka ah</h1>
+        </div>
+      </div>
+
+      <div class="admin-header-actions">
+        <span class="admin-user-pill" id="admin-user-display" style="font-size:13px;color:var(--gold);display:flex;align-items:center;gap:6px">
+          👤 <span id="admin-email-text">cabdilaahicawil881@gmail.com</span>
+        </span>
+        <a href="/menu?table=01" target="_blank" class="btn btn-sm btn-secondary" title="Tijaabi Menu-ga Miiska">📱 Menu-ga Macmiilka</a>
+        <a href="/staff" target="_blank" class="btn btn-sm btn-secondary" title="Fur KDS-ka">🛎️ KDS Shaqaalaha</a>
+        <button class="btn btn-sm btn-danger" onclick="logoutAdmin()">Ka Bax (Logout)</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="admin-nav-bar">
+    <div class="container admin-tabs-list">
+      <button class="admin-tab-btn active" onclick="switchTab('menu')">🍽️ Maamulka Menu-ga</button>
+      <button class="admin-tab-btn" onclick="switchTab('categories')">📑 Qaybaha (Categories)</button>
+      <button class="admin-tab-btn" onclick="switchTab('qrcode')">📱 QR Code-ka Makhaayadda</button>
+      <button class="admin-tab-btn" onclick="switchTab('requests')">🛎️ Codsiyada Waiter-ka</button>
+      <button class="admin-tab-btn" onclick="switchTab('tables')">🪑 Miisaska Makhaayadda</button>
+      <button class="admin-tab-btn" onclick="switchTab('settings')">⚙️ Dejinta &amp; Amniga</button>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="container admin-main-content">
+
+    <!-- ==========================================
+         TAB 1: MENU MANAGEMENT (ITEMS CMS)
+         ========================================== -->
+    <section id="tab-menu" class="admin-tab-section active">
+      <div class="section-title-row">
+        <div>
+          <h2>Maamulka Menu-ga &amp; Cuntooyinka</h2>
+          <p>Ku dar cunto cusub, wax ka beddel qiimaha, sawirka, portion sizes, xilliga cuntada ama go'naanta.</p>
+        </div>
+        <button class="btn btn-primary" onclick="openAddItemModal()">+ Ku Dar Cunto Cusub</button>
+      </div>
+
+      <!-- Meal Period & Category Quick Filters -->
+      <div class="admin-card" style="padding:14px 20px;margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <span style="font-size:13.5px;color:var(--gold);font-weight:700">Kala Saari:</span>
+        <select id="filter-admin-cat" onchange="renderMenuTable()" style="background:#1e120e;color:#fff;border:1px solid var(--gold-border);padding:6px 12px;border-radius:6px">
+          <option value="all">Dhammaan Qaybaha (All Categories)</option>
+        </select>
+        <select id="filter-admin-period" onchange="renderMenuTable()" style="background:#1e120e;color:#fff;border:1px solid var(--gold-border);padding:6px 12px;border-radius:6px">
+          <option value="all">Dhammaan Xilliyada (All Periods)</option>
+          <option value="breakfast">Quraac (Breakfast)</option>
+          <option value="lunch">Qado (Lunch)</option>
+          <option value="dinner">Casho (Dinner)</option>
+        </select>
+      </div>
+
+      <div class="admin-card">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Sawir</th>
+                <th>Magaca Cuntada</th>
+                <th>Qaybta</th>
+                <th>Xilliga</th>
+                <th>Cabbirka (Portions)</th>
+                <th>Qiimaha</th>
+                <th>Xaaladda</th>
+                <th>Hawlaha</th>
+              </tr>
+            </thead>
+            <tbody id="menu-tbody">
+              <!-- Dynamic rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 2: CATEGORY MANAGEMENT
+         ========================================== -->
+    <section id="tab-categories" class="admin-tab-section">
+      <div class="section-title-row">
+        <div>
+          <h2>Maamulka Qaybaha Menu-ga (Categories)</h2>
+          <p>Kala habee 6-da qaybood ee rasmiga ah ama ku dar qayb cusub.</p>
+        </div>
+        <button class="btn btn-primary" onclick="openAddCategoryModal()">+ Ku Dar Qayb Cusub</button>
+      </div>
+
+      <div class="admin-card">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Kala Horraynta (Order)</th>
+                <th>Magaca Qaybta</th>
+                <th>Xaaladda (Active)</th>
+                <th>Hawlaha</th>
+              </tr>
+            </thead>
+            <tbody id="categories-tbody">
+              <!-- Dynamic rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB: RESTAURANT QR CODE MANAGEMENT
+         ========================================== -->
+    <section id="tab-qrcode" class="admin-tab-section">
+      <div class="section-title-row">
+        <div>
+          <h2>QR Code-ka Rasmiga ah ee Makhaayadda</h2>
+          <p>Halkan ka arag, ka tijaabi, oo ka soo deji (Download PNG) QR Code-ka tooska u furaya Menu-ga Macmiilka ee MISRA COFFEE.</p>
+        </div>
+      </div>
+
+      <!-- Main QR Display Card -->
+      <div class="admin-card" style="padding:28px;max-width:860px;margin:0 auto 30px auto">
+        <div style="display:flex;gap:36px;align-items:center;flex-wrap:wrap;justify-content:center">
+          
+          <!-- QR Canvas Box -->
+          <div style="background:#FFFFFF;padding:18px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.3);text-align:center;border:3px solid var(--gold)">
+            <div id="restaurant-qr-box" style="display:inline-block"></div>
+            <div style="margin-top:10px;font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:#2B1B16">MISRA COFFEE</div>
+            <div style="font-size:11px;color:#7A6B63;letter-spacing:1px">DIGITAL CUSTOMER MENU</div>
+          </div>
+
+          <!-- QR Details & Action Buttons -->
+          <div style="flex:1;min-width:280px">
+            <span class="status-indicator-tag status-completed" style="margin-bottom:12px;display:inline-block">
+              ✅ Active Public Customer Menu QR
+            </span>
+            <h3 style="font-size:22px;color:#FAF6F0;margin:0 0 8px 0">QR Code-ka Miisaska Makhaayadda</h3>
+            <p style="font-size:14px;color:var(--text-muted);line-height:1.6;margin-bottom:16px">
+              QR Code-kani wuxuu macmiilka u furayaa <strong>Menu-ga Macmiilka ee Dadweynaha</strong> (<code style="color:var(--gold)">/menu</code>). Ma furo dashboard-ka maamulka mana dalbado cunto si toos ah inta uusan macmiilku dooran.
+            </p>
+
+            <div style="background:rgba(0,0,0,0.3);padding:12px 16px;border-radius:8px;border:1px solid var(--gold-border);margin-bottom:20px">
+              <label style="font-size:11.5px;text-transform:uppercase;color:var(--gold);font-weight:700;display:block;margin-bottom:4px">LINK-GA UU FURAYO QR-KU:</label>
+              <div id="restaurant-qr-dest-url" style="color:#FAF6F0;font-family:monospace;font-size:13.5px;word-break:break-all">/menu</div>
+            </div>
+
+            <!-- Action Buttons: Download PNG, Print, Test Link -->
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              <button class="btn btn-primary" onclick="downloadRestaurantQrCode()" style="display:inline-flex;align-items:center;gap:8px">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                <span>Soo Deji QR Code (Download PNG)</span>
+              </button>
+
+              <button class="btn btn-secondary" onclick="printRestaurantQrCard()" style="display:inline-flex;align-items:center;gap:8px">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                <span>Daabac Kaadhka Miiska</span>
+              </button>
+
+              <a id="btn-test-qr-link" href="/menu" target="_blank" class="btn btn-secondary" style="display:inline-flex;align-items:center;gap:8px">
+                <span>🌐 Tijaabi Menu-ga</span>
+              </a>
+            </div>
+
+            <!-- Domain Configuration Note -->
+            <div style="margin-top:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08)">
+              <label for="admin-qr-custom-domain" style="font-size:13px;color:var(--gold);font-weight:600;display:block;margin-bottom:6px">
+                ⚙️ Beddel Domain-ka QR-ka (Tusaale ahaan: https://misracoffee.com):
+              </label>
+              <div style="display:flex;gap:10px">
+                <input type="text" id="admin-qr-custom-domain" placeholder="https://misracoffee.com" style="background:#1e120e;color:#fff;border:1px solid var(--gold-border);padding:8px 12px;border-radius:6px;flex:1">
+                <button class="btn btn-sm btn-secondary" onclick="saveCustomQrDomain()">Kaydi Domain</button>
+              </div>
+              <small style="color:var(--text-muted);display:block;margin-top:5px;font-size:12px">
+                Waxaad beddeli kartaa domain-ka waqti kasta adiga oo aan wax code ah taaban.
+              </small>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 3: WAITER SERVICE REQUESTS
+         ========================================== -->
+    <section id="tab-requests" class="admin-tab-section">
+      <div class="section-title-row">
+        <div>
+          <h2>Codsiyada Waiter-ka &amp; Adeegga Miisaska</h2>
+          <p>La soco codsiyada tooska ah ee macaamiishu ka soo dirsadeen miisaska.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="loadRequestsHistory()">🔄 Cusboonaysii</button>
+      </div>
+
+      <div class="admin-card">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Miiska</th>
+                <th>Nooca Codsiga</th>
+                <th>Cuntooyinka La Xushay (haddii ay jiraan)</th>
+                <th>Waqtiga</th>
+                <th>Xaaladda</th>
+                <th>Hawlaha</th>
+              </tr>
+            </thead>
+            <tbody id="requests-history-tbody">
+              <!-- Dynamic rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 4: TABLES & QR CARD GENERATOR
+         ========================================== -->
+    <section id="tab-tables" class="admin-tab-section">
+      <div class="section-title-row">
+        <div>
+          <h2>Maamulka Miisaska &amp; Kaadhadhka QR</h2>
+          <p>Habeey lambarrada miisaska oo soo saar kaadhadhka QR-ka ee la daabacan karo.</p>
+        </div>
+        <button class="btn btn-primary" onclick="openAddTableModal()">+ Ku Dar Miis Cusub</button>
+      </div>
+
+      <!-- QR Base URL Setting -->
+      <div class="admin-card qr-settings-card">
+        <div class="two-col-inputs">
+          <div>
+            <label for="qr-base-domain"><strong>Domain-ka QR Codes-ka (Production URL):</strong></label>
+            <input type="text" id="qr-base-domain" placeholder="tusaale: http://localhost:3000 ama https://misracoffee.com">
+            <small>Geli domain-ka rasmiga ah si QR codes-ku u furaan websaytka la faafiyey (ha isticmaalin localhost marka aad daabacayso).</small>
+          </div>
+          <div style="display:flex;align-items:flex-end">
+            <button class="btn btn-secondary" onclick="saveQrBaseUrl()">Kaydi Domain-ka QR</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Single QR vs Table-Specific QR Guidance & Generator -->
+      <div class="admin-card" style="border-left:4px solid var(--gold);padding:20px;margin-bottom:24px">
+        <h3 style="font-size:18px;color:var(--gold);margin-bottom:8px">ℹ️ Xeerka QR-ka Guud (Single QR Code for All Tables)</h3>
+        <p style="font-size:14px;color:var(--text-muted);line-height:1.6;margin-bottom:14px">
+          Haddii aad daabacanayso <strong>hal QR code oo guud</strong> oo dhammaan miisaska loo isticmaalo halkii miis kasta QR gooni ah loo samayn lahaa: websaytku si toos ah uma ogaan karo miiska macaamiishu fadhiyaan QR-kaas oo kaliya. Sidaa darteed, nidaamku wuxuu macmiilka u furayaa menu-ga isagoo si qurux badan oo fudud ugu soo bandhigaya inuu doorto lambarka miiskiisa ka hor inta uusan u yeedhin waiter-ka.
+        </p>
+        <div style="display:flex;gap:20px;align-items:center;background:rgba(0,0,0,0.3);padding:14px;border-radius:10px;flex-wrap:wrap">
+          <div id="single-qr-container" style="background:#fff;padding:10px;border-radius:8px"></div>
+          <div>
+            <strong style="color:#FAF6F0;display:block;font-size:15px">QR Code Guud (Menu-ga Guud):</strong>
+            <span id="single-qr-url" style="color:var(--gold);font-family:monospace;font-size:13px;display:block;margin:4px 0 10px 0">/menu</span>
+            <button class="btn btn-sm btn-secondary" onclick="printSingleQrCard()">🖨️ Daabac Kaadhka QR-ka Guud</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tables Table -->
+      <div class="admin-card">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Lambar</th>
+                <th>Magaca Miiska</th>
+                <th>Xaaladda</th>
+                <th>Link-ga Menu-ga</th>
+                <th>Hawlaha</th>
+              </tr>
+            </thead>
+            <tbody id="tables-tbody">
+              <!-- Dynamic rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Printable QR Cards Preview -->
+      <div class="section-title-row" style="margin-top:40px">
+        <div>
+          <h3>Kaadhadhka QR ee Diyaar u ah Daabacaadda</h3>
+          <p>Kaadhadhkan waxaa loo daabici karaa in la dul dhigo miisaska makhaayadda.</p>
+        </div>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Daabac Dhammaan Kaadhadhka QR</button>
+      </div>
+
+      <div class="qr-cards-grid" id="printable-qr-grid">
+        <!-- Dynamic printable QR Cards -->
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 5: RESTAURANT SETTINGS & SECURITY
+         ========================================== -->
+    <section id="tab-settings" class="admin-tab-section">
+      <div class="section-title-row">
+        <div>
+          <h2>Dejinta Makhaayadda &amp; Amniga Maamulka</h2>
+          <p>Habeey macluumaadka guud ama beddel PIN/Secret-ka maamulaha.</p>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        
+        <!-- General Settings -->
+        <div class="admin-card">
+          <h3 style="font-size:20px;color:var(--gold);margin-bottom:16px">Macluumaadka Ganacsiga</h3>
+          <form id="restaurant-settings-form" onsubmit="saveRestaurantSettings(event)">
+            <div class="form-group">
+              <label for="set-res-name">Magaca Makhaayadda:</label>
+              <input type="text" id="set-res-name" required>
+            </div>
+            <div class="form-group">
+              <label for="set-res-tagline">Hal-ku-dhegga (Tagline):</label>
+              <input type="text" id="set-res-tagline">
+            </div>
+            <div class="form-group">
+              <label for="set-res-phone">Taleefanka Rasmiga ah:</label>
+              <input type="text" id="set-res-phone" required>
+            </div>
+            <div class="form-group">
+              <label for="set-res-currency">Astaanta Lacagta (Currency):</label>
+              <input type="text" id="set-res-currency" value="$">
+            </div>
+            <button type="submit" class="btn btn-primary">Kaydi Macluumaadka</button>
+          </form>
+        </div>
+
+        <!-- Security: Change Secret Key / PIN -->
+        <div class="admin-card">
+          <h3 style="font-size:20px;color:var(--gold);margin-bottom:16px">Beddel Furaha / Secret Key-ga</h3>
+          <p style="font-size:13.5px;color:var(--text-muted);margin-bottom:16px">
+            Waxaad halkaan kaga beddeli kartaa furaha bilowga ah (initial PIN/passphrase) fure cusub oo sir kuu ah.
+          </p>
+          <div id="change-pass-msg" style="display:none;padding:10px;border-radius:6px;margin-bottom:14px;font-size:13.5px"></div>
+          <form onsubmit="changeAdminSecret(event)">
+            <div class="form-group">
+              <label for="new-secret">Furaha Cusub (New Secret / Passphrase):</label>
+              <input type="password" id="new-secret" required minlength="6" placeholder="Geli furaha cusub">
+            </div>
+            <div class="form-group">
+              <label for="confirm-secret">Xaqiiji Furaha Cusub:</label>
+              <input type="password" id="confirm-secret" required minlength="6" placeholder="Mar kale geli furaha">
+            </div>
+            <button type="submit" class="btn btn-primary" id="btn-save-secret">Cusboonaysii Furaha</button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal: Add / Edit Item -->
+  <dialog id="item-dialog" class="admin-modal">
+    <form id="item-modal-form" onsubmit="saveItemModal(event)">
+      <h3 id="item-modal-title">Ku Dar Cunto / Cabitaan Cusub</h3>
+      <input type="hidden" id="modal-item-id">
+      
+      <div class="form-group">
+        <label for="modal-item-name">Magaca Cuntada (Somali Name):</label>
+        <input type="text" id="modal-item-name" required placeholder="tusaale: Qaxwo Dhaqameed">
+      </div>
+      <div class="form-group">
+        <label for="modal-item-cat">Qaybta (Category):</label>
+        <select id="modal-item-cat" required></select>
+      </div>
+      <div class="form-group">
+        <label for="modal-item-price">Qiimaha ($ - Demonstration Price):</label>
+        <input type="number" step="0.01" min="0" id="modal-item-price" required placeholder="2.50">
+      </div>
+      <div class="form-group">
+        <label for="modal-item-sizes">Cabbirro Ikhtiyaari ah (Portion Sizes):</label>
+        <input type="text" id="modal-item-sizes" placeholder="tusaale: Caadi: $2.50 | Weyn: $3.50">
+      </div>
+      <div class="form-group">
+        <label for="modal-item-period">Xilliga Cuntada (Meal Period):</label>
+        <select id="modal-item-period">
+          <option value="all">Maalinta oo dhan (All day)</option>
+          <option value="breakfast">Quraac kaliya (Breakfast)</option>
+          <option value="lunch">Qado kaliya (Lunch)</option>
+          <option value="dinner">Casho kaliya (Dinner)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="modal-item-desc">Sharaxaad (Description):</label>
+        <textarea id="modal-item-desc" rows="2" placeholder="Sharaxaad kooban oo ku saabsan diyaarinta iyo dhadhanka…"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="modal-item-img">Sawirka Cuntada (Upload / Replace Photograph):</label>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
+          <input type="text" id="modal-item-img" placeholder="/images/somali-coffee.jpg" style="flex:1" oninput="previewModalImage(this.value)">
+          <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+            📁 Soo Geli Sawir
+            <input type="file" id="modal-item-file" accept="image/*" style="display:none" onchange="handleImageFileUpload(event)">
+          </label>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;background:rgba(0,0,0,0.25);padding:10px;border-radius:8px">
+          <img id="modal-img-preview" src="/images/somali-coffee.jpg" alt="Preview" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--gold-border)">
+          <div style="font-size:12.5px;color:var(--text-muted)">
+            <span>Xulo sawir hore oo diyaar ah:</span>
+            <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
+              <button type="button" class="btn btn-sm btn-secondary" style="padding:2px 8px;font-size:11px" onclick="setModalImage('/images/somali-coffee.jpg')">Qaxwo</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="padding:2px 8px;font-size:11px" onclick="setModalImage('/images/breakfast.jpg')">Quraac</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="padding:2px 8px;font-size:11px" onclick="setModalImage('/images/lunch-dinner.jpg')">Qado/Casho</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="padding:2px 8px;font-size:11px" onclick="setModalImage('/images/snacks.jpg')">Cunto Fudud</button>
+              <button type="button" class="btn btn-sm btn-secondary" style="padding:2px 8px;font-size:11px" onclick="setModalImage('/images/drinks.jpg')">Cabitaanno</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="modal-item-available" checked style="width:auto"> 
+          Alaabtu hadda waa diyaar (Available for customers)
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('item-dialog').close()">Ka noqo</button>
+        <button type="submit" class="btn btn-primary">Kaydi Alaabta</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Modal: Add / Edit Category -->
+  <dialog id="category-dialog" class="admin-modal">
+    <form id="category-modal-form" onsubmit="saveCategoryModal(event)">
+      <h3 id="category-modal-title">Ku Dar Qayb Cusub</h3>
+      <input type="hidden" id="modal-cat-id">
+      
+      <div class="form-group">
+        <label for="modal-cat-name">Magaca Qaybta (Category Name):</label>
+        <input type="text" id="modal-cat-name" required placeholder="tusaale: Macmacaanka Carbeed">
+      </div>
+      <div class="form-group">
+        <label for="modal-cat-order">Kala Horraynta (Order Index):</label>
+        <input type="number" id="modal-cat-order" value="10">
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('category-dialog').close()">Ka noqo</button>
+        <button type="submit" class="btn btn-primary">Kaydi Qaybta</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Modal: Add / Edit Table -->
+  <dialog id="table-dialog" class="admin-modal">
+    <form id="table-modal-form" onsubmit="saveTableModal(event)">
+      <h3 id="table-modal-title">Ku Dar Miis Cusub</h3>
+      <input type="hidden" id="modal-table-id">
+      
+      <div class="form-group">
+        <label for="modal-table-number">Lambarka Miiska (tusaale: 07):</label>
+        <input type="text" id="modal-table-number" required placeholder="07">
+      </div>
+      <div class="form-group">
+        <label for="modal-table-label">Magaca Miiska (Label):</label>
+        <input type="text" id="modal-table-label" placeholder="Miis 07">
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="modal-table-active" checked style="width:auto"> 
+          Miisku wuu shaqeynayaa (Active)
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('table-dialog').close()">Ka noqo</button>
+        <button type="submit" class="btn btn-primary">Kaydi Miiska</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Local QR Code Library -->
+  <script src="/qrcode.min.js"></script>
+  <script src="/admin-dashboard.js"></script>
+  <script src="/web-app.js"></script>
+</body>
+</html>
